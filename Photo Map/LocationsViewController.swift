@@ -59,11 +59,6 @@ class LocationsViewController: UIViewController, UITableViewDelegate, UITableVie
         let lat = venue.value(forKeyPath: "location.lat") as! Double
         let lng = venue.value(forKeyPath: "location.lng") as! Double
 
-        let latString = "\(lat)"
-        let lngString = "\(lng)"
-
-        print(latString + " " + lngString)
-        
         delegate.locationsPickedLocation(controller: self, latitude: lat, longitude: lng, image: photoPick!)
         
     }

@@ -10,10 +10,13 @@ import UIKit
 
 class FullImageViewController: UIViewController {
 
+    @IBOutlet weak var pinImageView: UIImageView!
+    var pinImage: UIImage?
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        pinImageView.image = pinImage
     }
 
     override func didReceiveMemoryWarning() {

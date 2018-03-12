@@ -25,8 +25,6 @@ class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate,
     let vc = UIImagePickerController()
     var photoPick: UIImage?
     
-    var mapPhotos: [PhotoAnnotation]?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -88,13 +86,23 @@ class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate,
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
         
-        let destinationViewController = segue.destination as! LocationsViewController
-        
-        destinationViewController.photoPick = self.photoPick
-        destinationViewController.delegate = self
+        // Segue For Locations
+        if segue.identifier == "tagSegue"{
+            
+            let destinationViewController = segue.destination as! LocationsViewController
+            
+            destinationViewController.photoPick = self.photoPick
+            destinationViewController.delegate = self
+            
+        }
+        // Segue For FullImage 
+        if segue.identifier == "fullImageSegue"{
+            
+            let destinationViewController = segue.destination as! FullImageViewController
+
+            destinationViewController.pinImage = self.photoPick
+        }
         
     }
     
@@ -107,9 +115,8 @@ class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate,
             annotationView!.canShowCallout = true
             annotationView!.leftCalloutAccessoryView = UIImageView(frame: CGRect(x:0, y:0, width: 50, height:50))
             
-            
         }
-    
+        // Resize Image
         let imageView = annotationView?.leftCalloutAccessoryView as! UIImageView
         let resizeRenderImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 45, height: 45))
         resizeRenderImageView.layer.borderColor = UIColor.white.cgColor
@@ -123,9 +130,24 @@ class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate,
         imageView.image = thumbnail
         UIGraphicsEndImageContext()
         
-    
-        
+        // Info Button
+        let button = UIButton(type: UIButtonType.detailDisclosure) as UIButton
+        annotationView?.rightCalloutAccessoryView = button
+
         return annotationView
     }
 
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        
+        if control == view.rightCalloutAccessoryView{
+            
+            // On tapping the disclosure button you will get here
+            if let anno =  view.annotation as? PhotoAnnotation{
+                
+                self.photoPick = anno.photo
+                self.performSegue(withIdentifier: "fullImageSegue", sender: nil)
+            }
+            
+        }
+    }
 }
